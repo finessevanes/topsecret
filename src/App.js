@@ -24,6 +24,11 @@ function App() {
     }
   }
 
+  const reset = () => {
+    setAccount([]);
+    setSession([]);
+  };
+
   async function onConnect() {
     if (!signClient) {
       throw Error("Client is not set");
@@ -54,6 +59,17 @@ function App() {
     }
   }
 
+  async function onDisconnect() {
+    try {
+      await signClient.disconnect({
+        topic: session.topic,
+      });
+      reset();
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
   async function onSessionConnected(sessionNamespace) {
     try {
       setSession(sessionNamespace);
@@ -73,7 +89,10 @@ function App() {
     <div className="App">
       <h1>Sign v2 Standalone</h1>
       {account.length ? (
-        <p>{account}</p>
+        <>
+          <p>{account}</p>
+          <button onClick={onDisconnect}>Disconnect</button>
+        </>
       ) : (
         <button onClick={onConnect} disabled={!signClient}>
           Connect
