@@ -102,7 +102,7 @@ function App() {
         if (!account.length === undefined) throw new Error(`Account not found`);
 
         const tx = {
-          from: "0xEc57410F1F15df337b54c66BD98F1702B407cB22",
+          from: account,
           to: "0xBDE1EAE59cE082505bB73fedBa56252b1b9C60Ce",
           data: "0x",
           gasPrice: "0x029104e28c",
@@ -139,7 +139,7 @@ function App() {
         <>
           <p>{account}</p>
           <button onClick={onDisconnect}>Disconnect</button>
-          <button onClick={onSend}>Send</button>
+          <button onClick={onSend}>Send Transaction</button>
           {txnResult && (
             <h2>
               Check it out{" "}
