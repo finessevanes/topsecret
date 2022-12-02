@@ -10,6 +10,8 @@ const web3Modal = new Web3Modal({
 
 function App() {
   const [signClient, setSignClient] = useState();
+  const [session, setSession] = useState([]);
+  const [account, setAccount] = useState([]);
 
   async function createClient() {
     try {
@@ -27,20 +29,35 @@ function App() {
       throw Error("Client is not set");
     }
     try {
-      const namespace = {
+      const proposalNamespace = {
         eip155: {
           methods: ["eth_sign"],
           chains: ["eip155:5"],
           events: ["connect", "disconnect"],
         },
       };
-      const { uri } = await signClient.connect({
-        requiredNamespaces: namespace,
+      const { uri, approval } = await signClient.connect({
+        requiredNamespaces: proposalNamespace,
       });
 
       if (uri) {
-        web3Modal.openModal({ uri, standaloneChains: ["eip155:5"] });
+        web3Modal.openModal({
+          uri,
+          standaloneChains: proposalNamespace.eip155.chains,
+        });
+        const sessionNamespace = await approval();
+        onSessionConnected(sessionNamespace);
+        web3Modal.closeModal();
       }
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+  async function onSessionConnected(sessionNamespace) {
+    try {
+      setSession(sessionNamespace);
+      setAccount(sessionNamespace.namespaces.eip155.accounts[0].slice(9));
     } catch (e) {
       console.log(e);
     }
@@ -55,9 +72,13 @@ function App() {
   return (
     <div className="App">
       <h1>Sign v2 Standalone</h1>
-      <button onClick={onConnect} disabled={!signClient}>
-        Connect
-      </button>
+      {account.length ? (
+        <p>{account}</p>
+      ) : (
+        <button onClick={onConnect} disabled={!signClient}>
+          Connect
+        </button>
+      )}
     </div>
   );
 }
