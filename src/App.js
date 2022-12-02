@@ -19,6 +19,7 @@ function App() {
         projectId: process.env.REACT_APP_PROJECT_ID,
       });
       setSignClient(signClient);
+      await subscribeToEvents(signClient);
     } catch (e) {
       console.log(e);
     }
@@ -74,6 +75,19 @@ function App() {
     try {
       setSession(sessionNamespace);
       setAccount(sessionNamespace.namespaces.eip155.accounts[0].slice(9));
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+  async function subscribeToEvents(client) {
+    try {
+      if (client) {
+        client.on("session_delete", () => {
+          console.log("The user deleted the session from their wallet");
+          reset();
+        });
+      }
     } catch (e) {
       console.log(e);
     }
