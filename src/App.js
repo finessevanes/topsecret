@@ -64,6 +64,8 @@ function App() {
     try {
       await signClient.disconnect({
         topic: session.topic,
+        message: "User disconnected.",
+        code: 6000,
       });
       reset();
     } catch (e) {
