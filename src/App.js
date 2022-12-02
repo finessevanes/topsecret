@@ -12,6 +12,7 @@ function App() {
   const [signClient, setSignClient] = useState();
   const [session, setSession] = useState([]);
   const [account, setAccount] = useState([]);
+  const [txnResult, setTxnResult] = useState();
 
   async function createClient() {
     try {
@@ -118,7 +119,7 @@ function App() {
           },
         });
 
-        console.log(result)
+        setTxnResult(result);
       }
     } catch (e) {
       console.log(e);
@@ -139,6 +140,18 @@ function App() {
           <p>{account}</p>
           <button onClick={onDisconnect}>Disconnect</button>
           <button onClick={onSend}>Send</button>
+          {txnResult && (
+            <h2>
+              Check it out{" "}
+              <a
+                href={`https://goerli.etherscan.io/tx/${txnResult}`}
+                target="_blank"
+                rel="noreferrer"
+              >
+                here
+              </a>
+            </h2>
+          )}
         </>
       ) : (
         <button onClick={onConnect} disabled={!signClient}>
