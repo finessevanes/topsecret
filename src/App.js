@@ -37,7 +37,7 @@ function App() {
     try {
       const proposalNamespace = {
         eip155: {
-          methods: ["eth_sign"],
+          methods: ["eth_sendTransaction"],
           chains: ["eip155:5"],
           events: ["connect", "disconnect"],
         },
