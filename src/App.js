@@ -95,6 +95,36 @@ function App() {
     }
   }
 
+  async function onSend() {
+    try {
+      if (signClient) {
+        if (!account.length === undefined) throw new Error(`Account not found`);
+
+        const tx = {
+          from: "0xEc57410F1F15df337b54c66BD98F1702B407cB22",
+          to: "0xBDE1EAE59cE082505bB73fedBa56252b1b9C60Ce",
+          data: "0x",
+          gasPrice: "0x029104e28c",
+          gasLimit: "0x5208",
+          value: "0x00",
+        };
+
+        const result = await signClient.request({
+          topic: session.topic,
+          chainId: "eip155:5",
+          request: {
+            method: "eth_sendTransaction",
+            params: [tx],
+          },
+        });
+
+        console.log(result)
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
   useEffect(() => {
     if (!signClient) {
       createClient();
@@ -108,6 +138,7 @@ function App() {
         <>
           <p>{account}</p>
           <button onClick={onDisconnect}>Disconnect</button>
+          <button onClick={onSend}>Send</button>
         </>
       ) : (
         <button onClick={onConnect} disabled={!signClient}>
